@@ -20,6 +20,7 @@ public sealed class PlayerProximityDoor : MonoBehaviour
     private Quaternion openRotation;
     private Vector3 doorwayCenter;
     private Vector3 hingeToDoorCenter;
+    private Collider doorCollider;
     private float nextPlayerSearchTime;
     private float outsideRangeSince = -1f;
     private bool isOpen;
@@ -45,9 +46,10 @@ public sealed class PlayerProximityDoor : MonoBehaviour
 
         // The imported door mesh has no collider. This collider follows the
         // swing and blocks the player's CharacterController while closed.
-        if (GetComponent<Collider>() == null)
+        doorCollider = GetComponent<Collider>();
+        if (doorCollider == null)
         {
-            gameObject.AddComponent<BoxCollider>();
+            doorCollider = gameObject.AddComponent<BoxCollider>();
         }
 
         FindPlayer();
@@ -65,6 +67,7 @@ public sealed class PlayerProximityDoor : MonoBehaviour
 
             isOpen = false;
             RotateDoor(closedRotation);
+            SetDoorBlocking(true);
             return;
         }
 
@@ -94,6 +97,7 @@ public sealed class PlayerProximityDoor : MonoBehaviour
         }
 
         RotateDoor(isOpen ? openRotation : closedRotation);
+        SetDoorBlocking(!isOpen);
     }
 
     private void FindPlayer()
@@ -128,11 +132,20 @@ public sealed class PlayerProximityDoor : MonoBehaviour
             rotationSpeed * Time.deltaTime);
     }
 
+    private void SetDoorBlocking(bool shouldBlock)
+    {
+        if (doorCollider != null && doorCollider.enabled != shouldBlock)
+        {
+            doorCollider.enabled = shouldBlock;
+        }
+    }
+
     private void OnDisable()
     {
         if (initialized)
         {
             transform.rotation = closedRotation;
+            SetDoorBlocking(true);
         }
     }
 

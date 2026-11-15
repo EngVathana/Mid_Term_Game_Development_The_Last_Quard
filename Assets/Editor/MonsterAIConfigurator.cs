@@ -69,6 +69,87 @@ public static class MonsterAIConfigurator
         Debug.Log($"Monster attack physics fixed: {monsters.Length} scene monsters now use a 1.5 surface range.");
     }
 
+    [MenuItem("Tools/Setup Destructible Castle Walls")]
+    public static void SetupDestructibleCastleWalls()
+    {
+        CastleDefense defense = UnityEngine.Object.FindFirstObjectByType<CastleDefense>();
+        if (defense == null)
+        {
+            GameObject defenseObject = new GameObject("CastleDefenseHealth");
+            defense = defenseObject.AddComponent<CastleDefense>();
+        }
+
+        SerializedObject serializedDefense = new SerializedObject(defense);
+        serializedDefense.FindProperty("maxHealth").floatValue = 250f;
+        serializedDefense.ApplyModifiedPropertiesWithoutUndo();
+        EditorUtility.SetDirty(defense.gameObject);
+
+        Transform[] sceneTransforms = UnityEngine.Object.FindObjectsByType<Transform>(
+            FindObjectsInactive.Include,
+            FindObjectsSortMode.None);
+        int wallCount = 0;
+        int gateCount = 0;
+
+        foreach (Transform item in sceneTransforms)
+        {
+            string lowerName = item.name.ToLowerInvariant();
+            bool isStoneWall = lowerName.StartsWith("fence_stone_straight")
+                && !lowerName.Contains("gate");
+            bool isGateFrame = lowerName.StartsWith("fence_stone_straight_gate");
+            bool isGateDoor = item.GetComponent<PlayerProximityDoor>() != null
+                || lowerName == "builddoor";
+
+            if (!isStoneWall && !isGateFrame && !isGateDoor)
+            {
+                continue;
+            }
+
+            CastleBarrier barrier = item.GetComponent<CastleBarrier>();
+            if (barrier == null)
+            {
+                barrier = item.gameObject.AddComponent<CastleBarrier>();
+            }
+
+            Damageable health = item.GetComponent<Damageable>();
+            if (health == null)
+            {
+                health = item.gameObject.AddComponent<Damageable>();
+            }
+
+            SetHealth(health, 250f, true);
+
+            // The moving door already blocks the opening. Do not put one large
+            // box across the complete gate frame or the player could never pass.
+            if (!isGateFrame)
+            {
+                BoxCollider collider = item.GetComponent<BoxCollider>();
+                if (collider == null)
+                {
+                    collider = item.gameObject.AddComponent<BoxCollider>();
+                }
+
+                FitColliderToRenderers(item, collider);
+            }
+
+            EditorUtility.SetDirty(barrier);
+            EditorUtility.SetDirty(health);
+            EditorUtility.SetDirty(item.gameObject);
+
+            if (isGateFrame || isGateDoor)
+            {
+                gateCount++;
+            }
+            else
+            {
+                wallCount++;
+            }
+        }
+
+        EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
+        EditorSceneManager.SaveOpenScenes();
+        Debug.Log($"Shared castle defense ready: {wallCount} walls and {gateCount} gate objects use one 250 HP health pool.");
+    }
+
     private static void EnsureControllerFolder()
     {
         if (!AssetDatabase.IsValidFolder("Assets/Monster"))
@@ -284,6 +365,55 @@ public static class MonsterAIConfigurator
         }
 
         EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
+    }
+
+    private static void FitColliderToRenderers(Transform root, BoxCollider collider)
+    {
+        // Prefer only this wall object's renderer. Some wall pieces are used as
+        // hierarchy parents, so including child renderers creates a collider
+        // around the complete perimeter and an invisible floor over the gate.
+        Renderer[] renderers = root.GetComponents<Renderer>();
+        if (renderers.Length == 0)
+        {
+            renderers = root.GetComponentsInChildren<Renderer>(true);
+        }
+        if (renderers.Length == 0)
+        {
+            collider.center = Vector3.zero;
+            collider.size = Vector3.one;
+            return;
+        }
+
+        Bounds worldBounds = renderers[0].bounds;
+        for (int index = 1; index < renderers.Length; index++)
+        {
+            worldBounds.Encapsulate(renderers[index].bounds);
+        }
+
+        Vector3 worldMin = worldBounds.min;
+        Vector3 worldMax = worldBounds.max;
+        Vector3 localMin = new Vector3(float.PositiveInfinity, float.PositiveInfinity, float.PositiveInfinity);
+        Vector3 localMax = new Vector3(float.NegativeInfinity, float.NegativeInfinity, float.NegativeInfinity);
+
+        for (int x = 0; x <= 1; x++)
+        {
+            for (int y = 0; y <= 1; y++)
+            {
+                for (int z = 0; z <= 1; z++)
+                {
+                    Vector3 corner = new Vector3(
+                        x == 0 ? worldMin.x : worldMax.x,
+                        y == 0 ? worldMin.y : worldMax.y,
+                        z == 0 ? worldMin.z : worldMax.z);
+                    Vector3 localCorner = root.InverseTransformPoint(corner);
+                    localMin = Vector3.Min(localMin, localCorner);
+                    localMax = Vector3.Max(localMax, localCorner);
+                }
+            }
+        }
+
+        collider.center = (localMin + localMax) * 0.5f;
+        collider.size = localMax - localMin;
     }
 
     private static void SetHealth(Damageable health, float maxHealth, bool destroyOnDeath)

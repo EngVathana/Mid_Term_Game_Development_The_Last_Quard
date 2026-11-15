@@ -109,18 +109,63 @@ public sealed class MonsterAI : MonoBehaviour
 
     private void ChooseTarget()
     {
-        if (player != null)
+        Transform desiredTarget = castle != null ? castle.transform : null;
+
+        Damageable playerHealth = player != null
+            ? player.GetComponent<Damageable>()
+            : null;
+
+        if (player != null && (playerHealth == null || !playerHealth.IsDead))
         {
             Vector3 toPlayer = player.transform.position - transform.position;
             toPlayer.y = 0f;
             if (toPlayer.sqrMagnitude <= playerDetectionRange * playerDetectionRange)
             {
-                currentTarget = player.transform;
-                return;
+                desiredTarget = player.transform;
             }
         }
 
-        currentTarget = castle != null ? castle.transform : null;
+        currentTarget = FindBlockingBarrier(desiredTarget) ?? desiredTarget;
+    }
+
+    private Transform FindBlockingBarrier(Transform desiredTarget)
+    {
+        if (desiredTarget == null)
+        {
+            return null;
+        }
+
+        Vector3 origin = body.worldCenterOfMass;
+        Vector3 destination = GetClosestTargetPoint(desiredTarget);
+        destination.y = origin.y;
+        Vector3 direction = destination - origin;
+        float distance = direction.magnitude;
+
+        if (distance <= 0.01f)
+        {
+            return null;
+        }
+
+        RaycastHit[] hits = Physics.BoxCastAll(
+            origin,
+            new Vector3(0.4f, 1.25f, 0.4f),
+            direction.normalized,
+            Quaternion.identity,
+            distance,
+            Physics.DefaultRaycastLayers,
+            QueryTriggerInteraction.Ignore);
+
+        System.Array.Sort(hits, (left, right) => left.distance.CompareTo(right.distance));
+        foreach (RaycastHit hit in hits)
+        {
+            CastleBarrier barrier = hit.collider.GetComponentInParent<CastleBarrier>();
+            if (barrier != null && !barrier.IsDestroyed)
+            {
+                return barrier.transform;
+            }
+        }
+
+        return null;
     }
 
     private Vector3 GetClosestTargetPoint(Transform target)
@@ -199,6 +244,18 @@ public sealed class MonsterAI : MonoBehaviour
         if (animator != null)
         {
             animator.SetTrigger(AttackHash);
+        }
+
+        CastleBarrier barrier = target.GetComponent<CastleBarrier>();
+        if (barrier == null)
+        {
+            barrier = target.GetComponentInParent<CastleBarrier>();
+        }
+
+        if (barrier != null)
+        {
+            barrier.TakeDamage(attackDamage);
+            return;
         }
 
         Damageable damageable = target.GetComponent<Damageable>();
