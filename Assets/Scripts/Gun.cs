@@ -15,6 +15,9 @@ public class Gun : MonoBehaviour
     public float tracerSpeed = 250f;
     public float tracerLength = 2f;
 
+    [Header("Muzzle Flash")]
+    public ParticleSystem muzzleFlash;
+
     void Update()
     {
         if (Input.GetMouseButtonDown(0))
@@ -25,6 +28,12 @@ public class Gun : MonoBehaviour
 
     private void FireWeapon()
     {
+        if (muzzleFlash != null)
+        {
+            muzzleFlash.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+            muzzleFlash.Play();
+        }
+
         Ray ray = playerCamera.ViewportPointToRay(
             new Vector3(0.5f, 0.5f, 0f)
         );
