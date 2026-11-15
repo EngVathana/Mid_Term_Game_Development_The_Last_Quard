@@ -193,6 +193,37 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4060795173191102966, guid: af3ca5cff548ecd4e9d4db2c94f9b3d9, type: 3}
   m_PrefabInstance: {fileID: 190240605}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &256245822
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 256245823}
+  m_Layer: 0
+  m_Name: BulletSpawn
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &256245823
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 256245822}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.4, y: 0.0745, z: -0.0136}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1436354111}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &267431628
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1404,8 +1435,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Gun
   playerCamera: {fileID: 330585545}
-  shootingRange: 10000
-  damage: 50
+  shootingRange: 1000
+  damage: 25
+  tracerPrefab: {fileID: 981026276948265014, guid: 176ee80a14312ac43b5d228c86507a90, type: 3}
+  bulletSpawn: {fileID: 256245823}
+  tracerSpeed: 500
+  tracerLength: 10
 --- !u!1 &1153728534 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: c551a9baf71df754ab2a1b5221c3ddb4, type: 3}
@@ -2072,26 +2107,11 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4060795173191102966, guid: af3ca5cff548ecd4e9d4db2c94f9b3d9, type: 3}
   m_PrefabInstance: {fileID: 1422453187}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &1436354108 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 449204878691972485, guid: 8b7f7c65a4b3437489e590b8efb5ec7b, type: 3}
+--- !u!4 &1436354111 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -4741022495695341048, guid: 8b7f7c65a4b3437489e590b8efb5ec7b, type: 3}
   m_PrefabInstance: {fileID: 1638999766}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1436354110
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1436354108}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fc03432bf2661934db3f8dbf0ad94ddd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Gun
-  playerCamera: {fileID: 330585545}
-  shootingRange: 1000
-  damage: 50
 --- !u!1001 &1499662178
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2359,15 +2379,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 8b7f7c65a4b3437489e590b8efb5ec7b, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.368
+      value: 0.494
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 8b7f7c65a4b3437489e590b8efb5ec7b, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.29
+      value: 1.289
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 8b7f7c65a4b3437489e590b8efb5ec7b, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 1.01
+      value: 0.781
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 8b7f7c65a4b3437489e590b8efb5ec7b, type: 3}
       propertyPath: m_LocalRotation.w
@@ -2415,14 +2435,14 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 7deee5839bc8b104286b06c6268d459a, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: -4741022495695341048, guid: 8b7f7c65a4b3437489e590b8efb5ec7b, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 256245823}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 8b7f7c65a4b3437489e590b8efb5ec7b, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1131028723}
-    - targetCorrespondingSourceObject: {fileID: 449204878691972485, guid: 8b7f7c65a4b3437489e590b8efb5ec7b, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1436354110}
     - targetCorrespondingSourceObject: {fileID: -6893280091390919792, guid: 8b7f7c65a4b3437489e590b8efb5ec7b, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1414022437}
