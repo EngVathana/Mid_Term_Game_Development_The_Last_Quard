@@ -21,6 +21,8 @@ public sealed class PlayerProximityDoor : MonoBehaviour
     private Vector3 doorwayCenter;
     private Vector3 hingeToDoorCenter;
     private Collider doorCollider;
+    private GameObject monsterBlockerObject;
+    private Collider monsterBlockerCollider;
     private float nextPlayerSearchTime;
     private float outsideRangeSince = -1f;
     private bool isOpen;
@@ -52,6 +54,7 @@ public sealed class PlayerProximityDoor : MonoBehaviour
             doorCollider = gameObject.AddComponent<BoxCollider>();
         }
 
+        CreateMonsterBlocker();
         FindPlayer();
         initialized = true;
     }
@@ -103,7 +106,38 @@ public sealed class PlayerProximityDoor : MonoBehaviour
     private void FindPlayer()
     {
         player = FindFirstObjectByType<PlayerMovement>();
+        IgnoreMonsterBlockerForPlayer();
         nextPlayerSearchTime = Time.time + 0.5f;
+    }
+
+    private void CreateMonsterBlocker()
+    {
+        Bounds closedDoorBounds = doorCollider.bounds;
+        monsterBlockerObject = new GameObject($"{name}_MonsterBlocker");
+        monsterBlockerObject.transform.position = closedDoorBounds.center;
+
+        BoxCollider blocker = monsterBlockerObject.AddComponent<BoxCollider>();
+        blocker.center = Vector3.zero;
+        blocker.size = closedDoorBounds.size;
+        monsterBlockerCollider = blocker;
+
+        // This stationary blocker remains in the doorway when the visible door
+        // swings open. Monsters see its CastleBarrier and attack the shared HP.
+        monsterBlockerObject.AddComponent<CastleBarrier>();
+    }
+
+    private void IgnoreMonsterBlockerForPlayer()
+    {
+        if (player == null || monsterBlockerCollider == null)
+        {
+            return;
+        }
+
+        Collider[] playerColliders = player.GetComponentsInChildren<Collider>(true);
+        foreach (Collider playerCollider in playerColliders)
+        {
+            Physics.IgnoreCollision(monsterBlockerCollider, playerCollider, true);
+        }
     }
 
     private void OpenAwayFrom(Vector3 playerPosition)
@@ -146,6 +180,14 @@ public sealed class PlayerProximityDoor : MonoBehaviour
         {
             transform.rotation = closedRotation;
             SetDoorBlocking(true);
+        }
+    }
+
+    private void OnDestroy()
+    {
+        if (monsterBlockerObject != null)
+        {
+            Destroy(monsterBlockerObject);
         }
     }
 
