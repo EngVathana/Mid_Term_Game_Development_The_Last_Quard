@@ -1,17 +1,15 @@
-using System.Collections;
 using UnityEngine;
 
 public class Gun : MonoBehaviour
-{   
-    public GameObject bulletPrefab;
-    public Transform bulletSpawn;
-    public float bulletVelocity = 30;
-    public float bulletPrefabLifeTime = 3f;
+{
+    public Camera playerCamera;
 
-    // Update is called once per frame
+    public float shootingRange = 100f;
+    public int damage = 50;
+
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Mouse0))
+        if (Input.GetMouseButtonDown(0))
         {
             FireWeapon();
         }
@@ -19,16 +17,24 @@ public class Gun : MonoBehaviour
 
     private void FireWeapon()
     {
-        GameObject bullet = Instantiate(bulletPrefab, bulletSpawn.position, Quaternion.identity);
+        Ray ray = playerCamera.ViewportPointToRay(
+            new Vector3(0.5f, 0.5f, 0f)
+        );
 
-        bullet.GetComponent<Rigidbody>().AddForce(bulletSpawn.forward.normalized * bulletVelocity, ForceMode.Impulse);
+        RaycastHit hit;
 
-        StartCoroutine(DestroyBulletAfterTime(bullet, bulletPrefabLifeTime));
-    }
+        if (Physics.Raycast(ray, out hit, shootingRange))
+        {
+            Debug.Log("Hit: " + hit.collider.name);
 
-    private IEnumerator DestroyBulletAfterTime(GameObject bullet, float delay)
-    {
-        yield return new WaitForSeconds(delay);
-        Destroy(bullet);
+            Enemy enemy = hit.collider.GetComponentInParent<Enemy>();
+
+            if (enemy != null)
+            {
+                enemy.TakeDamage(damage);
+
+                Debug.Log("Enemy Hit!");
+            }
+        }
     }
 }
