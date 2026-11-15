@@ -9,6 +9,15 @@ public class Gun : MonoBehaviour
     public float shootingRange = 100f;
     public int damage = 25;
 
+    [Header("Ammo")]
+    [Min(1)] public int magazineSize = 30;
+    [SerializeField, Min(0)] private int currentAmmo = 30;
+    [Min(0f)] public float reloadDuration = 2f;
+
+    public int CurrentAmmo => currentAmmo;
+    public bool IsReloading { get; private set; }
+    private Coroutine reloadCoroutine;
+
     [Header("Bullet Tracer")]
     public LineRenderer tracerPrefab;
     public Transform bulletSpawn;
@@ -20,6 +29,12 @@ public class Gun : MonoBehaviour
 
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.R) && !IsReloading &&
+            currentAmmo < magazineSize)
+        {
+            reloadCoroutine = StartCoroutine(Reload());
+        }
+
         if (Input.GetMouseButtonDown(0))
         {
             FireWeapon();
@@ -28,6 +43,13 @@ public class Gun : MonoBehaviour
 
     private void FireWeapon()
     {
+        if (IsReloading || currentAmmo <= 0 || playerCamera == null)
+        {
+            return;
+        }
+
+        currentAmmo--;
+
         if (muzzleFlash != null)
         {
             muzzleFlash.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
@@ -60,9 +82,32 @@ public class Gun : MonoBehaviour
             targetPoint = ray.GetPoint(shootingRange);
         }
 
-        StartCoroutine(
-            ShowTracer(bulletSpawn.position, targetPoint)
-        );
+        if (bulletSpawn != null && tracerPrefab != null)
+        {
+            StartCoroutine(ShowTracer(bulletSpawn.position, targetPoint));
+        }
+    }
+
+    private IEnumerator Reload()
+    {
+        IsReloading = true;
+        yield return new WaitForSeconds(reloadDuration);
+
+        currentAmmo = magazineSize;
+
+        IsReloading = false;
+        reloadCoroutine = null;
+    }
+
+    private void OnDisable()
+    {
+        if (reloadCoroutine != null)
+        {
+            StopCoroutine(reloadCoroutine);
+            reloadCoroutine = null;
+        }
+
+        IsReloading = false;
     }
 
     private IEnumerator ShowTracer(Vector3 start, Vector3 end)
