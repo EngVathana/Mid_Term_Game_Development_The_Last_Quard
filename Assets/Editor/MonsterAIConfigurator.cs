@@ -48,6 +48,27 @@ public static class MonsterAIConfigurator
         Debug.Log("Monster AI setup complete: monsters target the castle, switch to the player in range, and use walk/attack animations.");
     }
 
+    [MenuItem("Tools/Fix Monster Attack Range")]
+    public static void FixMonsterAttackRange()
+    {
+        MonsterAI[] monsters = UnityEngine.Object.FindObjectsByType<MonsterAI>(
+            FindObjectsInactive.Include,
+            FindObjectsSortMode.None);
+
+        foreach (MonsterAI monster in monsters)
+        {
+            SerializedObject serializedMonster = new SerializedObject(monster);
+            serializedMonster.FindProperty("attackRange").floatValue = 1.5f;
+            serializedMonster.ApplyModifiedPropertiesWithoutUndo();
+            PrefabUtility.RecordPrefabInstancePropertyModifications(monster);
+            EditorUtility.SetDirty(monster);
+        }
+
+        EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
+        EditorSceneManager.SaveOpenScenes();
+        Debug.Log($"Monster attack physics fixed: {monsters.Length} scene monsters now use a 1.5 surface range.");
+    }
+
     private static void EnsureControllerFolder()
     {
         if (!AssetDatabase.IsValidFolder("Assets/Monster"))
@@ -190,6 +211,7 @@ public static class MonsterAIConfigurator
 
             SerializedObject aiObject = new SerializedObject(ai);
             aiObject.FindProperty("animatorController").objectReferenceValue = controller;
+            aiObject.FindProperty("attackRange").floatValue = 1.5f;
             aiObject.ApplyModifiedPropertiesWithoutUndo();
 
             Damageable health = root.GetComponent<Damageable>();
@@ -207,6 +229,8 @@ public static class MonsterAIConfigurator
             if (body != null)
             {
                 body.constraints |= RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
+                body.isKinematic = true;
+                body.useGravity = false;
                 body.interpolation = RigidbodyInterpolation.Interpolate;
             }
 

@@ -5,7 +5,7 @@ public sealed class MonsterAI : MonoBehaviour
 {
     [Header("Targeting")]
     [SerializeField, Min(1f)] private float playerDetectionRange = 35f;
-    [SerializeField, Min(0.1f)] private float attackRange = 4f;
+    [SerializeField, Min(0.1f)] private float attackRange = 1.5f;
 
     [Header("Movement")]
     [SerializeField, Min(0.1f)] private float moveSpeed = 5f;
@@ -51,6 +51,10 @@ public sealed class MonsterAI : MonoBehaviour
 
         body.constraints |= RigidbodyConstraints.FreezeRotationX
             | RigidbodyConstraints.FreezeRotationZ;
+        // AI movement is controlled by MovePosition. A dynamic Rigidbody let
+        // overlapping character colliders launch or bury the monster.
+        body.isKinematic = true;
+        body.useGravity = false;
         body.interpolation = RigidbodyInterpolation.Interpolate;
 
         FindSceneTargets();
@@ -73,7 +77,7 @@ public sealed class MonsterAI : MonoBehaviour
         Vector3 targetPoint = GetClosestTargetPoint(currentTarget);
         Vector3 direction = targetPoint - body.position;
         direction.y = 0f;
-        float distance = direction.magnitude;
+        float distance = GetSurfaceDistance(targetPoint);
 
         if (direction.sqrMagnitude > 0.001f)
         {
@@ -124,12 +128,12 @@ public sealed class MonsterAI : MonoBehaviour
         Collider[] colliders = target.GetComponentsInChildren<Collider>();
         if (colliders.Length > 0)
         {
-            Vector3 closest = colliders[0].ClosestPoint(body.position);
+            Vector3 closest = colliders[0].bounds.ClosestPoint(body.position);
             float closestDistance = (closest - body.position).sqrMagnitude;
 
             for (int i = 1; i < colliders.Length; i++)
             {
-                Vector3 point = colliders[i].ClosestPoint(body.position);
+                Vector3 point = colliders[i].bounds.ClosestPoint(body.position);
                 float distance = (point - body.position).sqrMagnitude;
                 if (distance < closestDistance)
                 {
@@ -154,6 +158,34 @@ public sealed class MonsterAI : MonoBehaviour
         }
 
         return target.position;
+    }
+
+    private float GetSurfaceDistance(Vector3 targetPoint)
+    {
+        Collider[] ownColliders = GetComponentsInChildren<Collider>();
+        float closestDistance = float.PositiveInfinity;
+
+        foreach (Collider ownCollider in ownColliders)
+        {
+            if (!ownCollider.enabled)
+            {
+                continue;
+            }
+
+            Vector3 ownPoint = ownCollider.bounds.ClosestPoint(targetPoint);
+            Vector3 separation = targetPoint - ownPoint;
+            separation.y = 0f;
+            closestDistance = Mathf.Min(closestDistance, separation.magnitude);
+        }
+
+        if (!float.IsPositiveInfinity(closestDistance))
+        {
+            return closestDistance;
+        }
+
+        Vector3 fallback = targetPoint - body.position;
+        fallback.y = 0f;
+        return fallback.magnitude;
     }
 
     private void TryAttack(Transform target)

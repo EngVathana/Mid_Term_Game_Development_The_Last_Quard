@@ -7,6 +7,19 @@ public class Gun : MonoBehaviour
     [SerializeField] public float shootingRange = 10000f;
     [SerializeField] public int damage = 50;
 
+    private void Awake()
+    {
+        if (playerCamera == null)
+        {
+            playerCamera = GetComponentInParent<Camera>();
+        }
+
+        if (playerCamera == null)
+        {
+            playerCamera = Camera.main;
+        }
+    }
+
     void Update()
     {
         if (Input.GetMouseButtonDown(0))
@@ -17,6 +30,12 @@ public class Gun : MonoBehaviour
 
     private void FireWeapon()
     {
+        if (playerCamera == null)
+        {
+            Debug.LogWarning("Gun cannot fire because no player camera is assigned.", this);
+            return;
+        }
+
         Ray ray = playerCamera.ViewportPointToRay(
             new Vector3(0.5f, 0.5f, 0f)
         );
