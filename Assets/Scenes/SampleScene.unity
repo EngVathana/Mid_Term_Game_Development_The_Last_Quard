@@ -119,37 +119,6 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1 &72077982
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 72077983}
-  m_Layer: 0
-  m_Name: BulletSpawn
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &72077983
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 72077982}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0.547}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 884816580}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &190240605
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1025,8 +994,7 @@ Transform:
   m_LocalPosition: {x: 0.368, y: 1.29, z: 1.01}
   m_LocalScale: {x: 0.15, y: 0.15, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 72077983}
+  m_Children: []
   m_Father: {fileID: 1669055653}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &884816581
@@ -1042,8 +1010,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Gun
   playerCamera: {fileID: 330585545}
-  shootingRange: 100
-  damage: 25
+  shootingRange: 1000
+  damage: 50
 --- !u!65 &884816582
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -2636,7 +2604,7 @@ Transform:
   m_GameObject: {fileID: 1669055648}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 332.6, y: 13.75, z: -437.7}
+  m_LocalPosition: {x: 332.6, y: 13.75, z: -1548}
   m_LocalScale: {x: 9, y: 9, z: 9}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -3450,6 +3418,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: DevilTall1
       objectReference: {fileID: 0}
+    - target: {fileID: 5639240307888108252, guid: 828a40e10d3cbb647a3c5c94c5829da7, type: 3}
+      propertyPath: moveSpeed
+      value: 35
+      objectReference: {fileID: 0}
+    - target: {fileID: 5639240307888108252, guid: 828a40e10d3cbb647a3c5c94c5829da7, type: 3}
+      propertyPath: attackRange
+      value: 18
+      objectReference: {fileID: 0}
+    - target: {fileID: 5639240307888108252, guid: 828a40e10d3cbb647a3c5c94c5829da7, type: 3}
+      propertyPath: playerDetectionRange
+      value: 200
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -3521,6 +3501,18 @@ PrefabInstance:
     - target: {fileID: 5763015364835353099, guid: 3c6166720282e59478cb87136742b28c, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6874291572126116077, guid: 3c6166720282e59478cb87136742b28c, type: 3}
+      propertyPath: moveSpeed
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 6874291572126116077, guid: 3c6166720282e59478cb87136742b28c, type: 3}
+      propertyPath: attackRange
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 6874291572126116077, guid: 3c6166720282e59478cb87136742b28c, type: 3}
+      propertyPath: playerDetectionRange
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 7747149342231445855, guid: 3c6166720282e59478cb87136742b28c, type: 3}
       propertyPath: m_Enabled
@@ -3597,6 +3589,18 @@ PrefabInstance:
     - target: {fileID: 7806180438130456568, guid: 87c2bab38b4898e43af599422e19ce73, type: 3}
       propertyPath: m_Name
       value: Skeleton
+      objectReference: {fileID: 0}
+    - target: {fileID: 8145415535636864481, guid: 87c2bab38b4898e43af599422e19ce73, type: 3}
+      propertyPath: moveSpeed
+      value: 35
+      objectReference: {fileID: 0}
+    - target: {fileID: 8145415535636864481, guid: 87c2bab38b4898e43af599422e19ce73, type: 3}
+      propertyPath: attackRange
+      value: 18
+      objectReference: {fileID: 0}
+    - target: {fileID: 8145415535636864481, guid: 87c2bab38b4898e43af599422e19ce73, type: 3}
+      propertyPath: playerDetectionRange
+      value: 200
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

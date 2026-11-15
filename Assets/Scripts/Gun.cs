@@ -4,8 +4,8 @@ public class Gun : MonoBehaviour
 {
     public Camera playerCamera;
 
-    public float shootingRange = 100f;
-    public int damage = 50;
+    [SerializeField] public float shootingRange = 10000f;
+    [SerializeField] public int damage = 50;
 
     void Update()
     {
