@@ -29,15 +29,16 @@ public class Gun : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.R) && !IsReloading &&
-            currentAmmo < magazineSize)
-        {
-            reloadCoroutine = StartCoroutine(Reload());
-        }
-
         if (Input.GetMouseButtonDown(0))
         {
             FireWeapon();
+        }
+
+        // Reload automatically when empty, or manually with R.
+        if (!IsReloading && currentAmmo < magazineSize &&
+            (currentAmmo <= 0 || Input.GetKeyDown(KeyCode.R)))
+        {
+            reloadCoroutine = StartCoroutine(Reload());
         }
     }
 
