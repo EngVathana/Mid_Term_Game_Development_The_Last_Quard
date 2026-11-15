@@ -1,0 +1,188 @@
+using UnityEngine;
+
+[RequireComponent(typeof(Rigidbody))]
+public sealed class MonsterAI : MonoBehaviour
+{
+    [Header("Targeting")]
+    [SerializeField, Min(1f)] private float playerDetectionRange = 35f;
+    [SerializeField, Min(0.1f)] private float attackRange = 4f;
+
+    [Header("Movement")]
+    [SerializeField, Min(0.1f)] private float moveSpeed = 5f;
+    [SerializeField, Min(1f)] private float turnSpeed = 360f;
+
+    [Header("Attack")]
+    [SerializeField, Min(0.1f)] private float attackDamage = 10f;
+    [SerializeField, Min(0.1f)] private float attackCooldown = 1.25f;
+
+    [Header("Animation")]
+    [SerializeField] private RuntimeAnimatorController animatorController;
+
+    private static readonly int IsMovingHash = Animator.StringToHash("IsMoving");
+    private static readonly int AttackHash = Animator.StringToHash("Attack");
+
+    private Rigidbody body;
+    private Animator animator;
+    private PlayerMovement player;
+    private CastleTarget castle;
+    private Transform currentTarget;
+    private float nextTargetSearchTime;
+    private float nextAttackTime;
+
+    private void Awake()
+    {
+        body = GetComponent<Rigidbody>();
+        animator = GetComponentInChildren<Animator>(true);
+
+        // These monster prefabs are model-prefab variants and did not contain an
+        // Animator component. Put it on the model root so the FBX curve paths bind.
+        if (animator == null)
+        {
+            animator = gameObject.AddComponent<Animator>();
+        }
+
+        if (animator != null && animatorController != null)
+        {
+            animator.runtimeAnimatorController = animatorController;
+            animator.applyRootMotion = false;
+            animator.cullingMode = AnimatorCullingMode.AlwaysAnimate;
+            animator.enabled = true;
+        }
+
+        body.constraints |= RigidbodyConstraints.FreezeRotationX
+            | RigidbodyConstraints.FreezeRotationZ;
+        body.interpolation = RigidbodyInterpolation.Interpolate;
+
+        FindSceneTargets();
+    }
+
+    private void FixedUpdate()
+    {
+        if (Time.time >= nextTargetSearchTime || player == null || castle == null)
+        {
+            FindSceneTargets();
+        }
+
+        ChooseTarget();
+        if (currentTarget == null)
+        {
+            SetWalking(false);
+            return;
+        }
+
+        Vector3 targetPoint = GetClosestTargetPoint(currentTarget);
+        Vector3 direction = targetPoint - body.position;
+        direction.y = 0f;
+        float distance = direction.magnitude;
+
+        if (direction.sqrMagnitude > 0.001f)
+        {
+            Quaternion lookRotation = Quaternion.LookRotation(direction.normalized, Vector3.up);
+            body.MoveRotation(Quaternion.RotateTowards(
+                body.rotation,
+                lookRotation,
+                turnSpeed * Time.fixedDeltaTime));
+        }
+
+        if (distance > attackRange)
+        {
+            SetWalking(true);
+            Vector3 step = direction.normalized * moveSpeed * Time.fixedDeltaTime;
+            body.MovePosition(body.position + step);
+            return;
+        }
+
+        SetWalking(false);
+        TryAttack(currentTarget);
+    }
+
+    private void FindSceneTargets()
+    {
+        player = FindFirstObjectByType<PlayerMovement>();
+        castle = FindFirstObjectByType<CastleTarget>();
+        nextTargetSearchTime = Time.time + 0.5f;
+    }
+
+    private void ChooseTarget()
+    {
+        if (player != null)
+        {
+            Vector3 toPlayer = player.transform.position - transform.position;
+            toPlayer.y = 0f;
+            if (toPlayer.sqrMagnitude <= playerDetectionRange * playerDetectionRange)
+            {
+                currentTarget = player.transform;
+                return;
+            }
+        }
+
+        currentTarget = castle != null ? castle.transform : null;
+    }
+
+    private Vector3 GetClosestTargetPoint(Transform target)
+    {
+        Collider[] colliders = target.GetComponentsInChildren<Collider>();
+        if (colliders.Length > 0)
+        {
+            Vector3 closest = colliders[0].ClosestPoint(body.position);
+            float closestDistance = (closest - body.position).sqrMagnitude;
+
+            for (int i = 1; i < colliders.Length; i++)
+            {
+                Vector3 point = colliders[i].ClosestPoint(body.position);
+                float distance = (point - body.position).sqrMagnitude;
+                if (distance < closestDistance)
+                {
+                    closest = point;
+                    closestDistance = distance;
+                }
+            }
+
+            return closest;
+        }
+
+        Renderer[] renderers = target.GetComponentsInChildren<Renderer>();
+        if (renderers.Length > 0)
+        {
+            Bounds bounds = renderers[0].bounds;
+            for (int i = 1; i < renderers.Length; i++)
+            {
+                bounds.Encapsulate(renderers[i].bounds);
+            }
+
+            return bounds.ClosestPoint(body.position);
+        }
+
+        return target.position;
+    }
+
+    private void TryAttack(Transform target)
+    {
+        if (Time.time < nextAttackTime)
+        {
+            return;
+        }
+
+        nextAttackTime = Time.time + attackCooldown;
+        if (animator != null)
+        {
+            animator.SetTrigger(AttackHash);
+        }
+
+        Damageable damageable = target.GetComponent<Damageable>();
+        if (damageable == null)
+        {
+            damageable = target.GetComponentInParent<Damageable>();
+        }
+
+        damageable?.TakeDamage(attackDamage);
+    }
+
+    private void SetWalking(bool isWalking)
+    {
+        if (animator != null)
+        {
+            animator.SetBool(IsMovingHash, isWalking);
+        }
+    }
+}
