@@ -71,4 +71,10 @@ public class PlayerMovement : MonoBehaviour
         lastPosition = gameObject.transform.position;
 
     }
+
+    public void ResetMovement()
+    {
+        velocity = Vector3.zero;
+        lastPosition = transform.position;
+    }
 }

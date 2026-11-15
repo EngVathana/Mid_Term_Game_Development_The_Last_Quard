@@ -32,4 +32,9 @@ public sealed class Damageable : MonoBehaviour
             }
         }
     }
+
+    public void RestoreFullHealth()
+    {
+        CurrentHealth = maxHealth;
+    }
 }
