@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -44,7 +43,20 @@ public sealed class GameManager : MonoBehaviour
     [Header("Scene References (automatic if empty)")]
     [SerializeField] private DayNightController dayNight;
     [SerializeField] private Damageable castleHealth;
-    [SerializeField] private List<Transform> enemySpawnPoints = new List<Transform>();
+    private static readonly Vector3[] EnemySpawnPositions =
+    {
+        new Vector3(235.4599f, 0.5f, 736.773f),
+        new Vector3(286.88f, 0.57f, 737.68f),
+        new Vector3(333.93f, 0.57f, 737.68f),
+        new Vector3(381.96f, 0.57f, 737.68f),
+        new Vector3(434.05f, 0.57f, 737.68f),
+        new Vector3(483.39f, 0.57f, 737.68f),
+        new Vector3(531.5f, 0.57f, 737.68f),
+        new Vector3(584.39f, 0.57f, 737.68f),
+        new Vector3(633.54f, 0.57f, 737.68f),
+        new Vector3(684.25f, 0.57f, 737.68f),
+        new Vector3(733.8f, 0.57f, 737.68f)
+    };
 
     public GameState State { get; private set; } = GameState.Home;
     public int CurrentWaveNumber => currentWaveIndex + 1;
@@ -240,15 +252,15 @@ public sealed class GameManager : MonoBehaviour
 
     private void SpawnEnemy(GameObject prefab, int spawnIndex)
     {
-        if (enemySpawnPoints.Count == 0)
+        if (EnemySpawnPositions.Length == 0)
         {
-            Debug.LogError("No spawn points found. Name cubes 'enemy spawn 1' through 'enemy spawn 11'.", this);
+            Debug.LogError("No enemy spawn positions are configured in GameManager.", this);
             return;
         }
 
-        Transform point = enemySpawnPoints[spawnIndex % enemySpawnPoints.Count];
-        Vector3 position = point.position + Vector3.up * spawnHeightOffset;
-        GameObject instance = Instantiate(prefab, position, point.rotation);
+        Vector3 spawnPosition = EnemySpawnPositions[spawnIndex % EnemySpawnPositions.Length];
+        Vector3 position = spawnPosition + Vector3.up * spawnHeightOffset;
+        GameObject instance = Instantiate(prefab, position, Quaternion.identity);
         Enemy enemy = instance.GetComponent<Enemy>();
         if (enemy == null)
         {
@@ -366,32 +378,6 @@ public sealed class GameManager : MonoBehaviour
             guns = playerMovement.GetComponentsInChildren<Gun>(true);
         }
 
-        enemySpawnPoints = enemySpawnPoints
-            .Where(point => point != null)
-            .Concat(FindObjectsByType<Transform>(FindObjectsInactive.Include, FindObjectsSortMode.None)
-                .Where(item => item.name.StartsWith("enemy spawn ", StringComparison.OrdinalIgnoreCase)))
-            .Distinct()
-            .OrderBy(GetSpawnNumber)
-            .ToList();
-
-        foreach (Transform point in enemySpawnPoints)
-        {
-            foreach (Renderer marker in point.GetComponentsInChildren<Renderer>(true))
-            {
-                marker.enabled = false;
-            }
-
-            foreach (Collider marker in point.GetComponentsInChildren<Collider>(true))
-            {
-                marker.enabled = false;
-            }
-        }
-    }
-
-    private static int GetSpawnNumber(Transform point)
-    {
-        string number = new string(point.name.Where(char.IsDigit).ToArray());
-        return int.TryParse(number, out int value) ? value : int.MaxValue;
     }
 
     private void SetPlayerInput(bool active)

@@ -81,16 +81,7 @@ public static class GameSystemsInstaller
         EditorSceneManager.MarkSceneDirty(systems.scene);
         Selection.activeGameObject = systems;
 
-        int spawnCount = 0;
-        foreach (Transform item in Object.FindObjectsByType<Transform>(FindObjectsInactive.Include, FindObjectsSortMode.None))
-        {
-            if (item.name.StartsWith("enemy spawn ", System.StringComparison.OrdinalIgnoreCase))
-            {
-                spawnCount++;
-            }
-        }
-
-        Debug.Log($"Game systems installed. Found {spawnCount} enemy spawn points and disabled {disabledEnemyCount} pre-placed enemy roots. Edit Waves on the GameManager component.", manager);
+        Debug.Log($"Game systems installed with built-in enemy spawn positions. Disabled {disabledEnemyCount} pre-placed enemy roots. Edit Waves on the GameManager component.", manager);
     }
 
     private static void ConfigureWave(SerializedProperty wave, string name,
