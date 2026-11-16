@@ -93,6 +93,11 @@ public sealed class PlayerRespawn : MonoBehaviour
         transform.SetPositionAndRotation(finalPosition, spawnRotation);
         health.RestoreFullHealth();
 
+        foreach (Gun gun in guns)
+        {
+            gun.ResetAmmo();
+        }
+
         if (movement != null)
         {
             movement.ResetMovement();

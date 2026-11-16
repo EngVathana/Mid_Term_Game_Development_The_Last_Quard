@@ -100,7 +100,18 @@ public class Gun : MonoBehaviour
         reloadCoroutine = null;
     }
 
+    public void ResetAmmo()
+    {
+        CancelReload();
+        currentAmmo = magazineSize;
+    }
+
     private void OnDisable()
+    {
+        CancelReload();
+    }
+
+    private void CancelReload()
     {
         if (reloadCoroutine != null)
         {
