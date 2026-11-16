@@ -77,14 +77,11 @@ public class Gun : MonoBehaviour
         {
             targetPoint = hit.point;
 
-            Debug.Log("Hit: " + hit.collider.name);
-
             Enemy enemy = hit.collider.GetComponentInParent<Enemy>();
 
             if (enemy != null)
             {
                 enemy.TakeDamage(damage);
-                Debug.Log("Enemy Hit!");
             }
         }
         else
@@ -135,8 +132,6 @@ public class Gun : MonoBehaviour
     private IEnumerator ShowTracer(Vector3 start, Vector3 end)
     {
         LineRenderer tracer = Instantiate(tracerPrefab);
-
-        Debug.Log("TRACER CREATED!");
 
         tracer.positionCount = 2;
         tracer.useWorldSpace = true;

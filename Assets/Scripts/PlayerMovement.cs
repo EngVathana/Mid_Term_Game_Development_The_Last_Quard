@@ -14,10 +14,6 @@ public class PlayerMovement : MonoBehaviour
     Vector3 velocity;
 
     bool isGrounded;
-    bool isMoving; 
-
-    private Vector3 lastPosition = new Vector3(0f, 0f, 0f);
-
     void Start()
     {
         controller = GetComponent<CharacterController>();
@@ -57,24 +53,10 @@ public class PlayerMovement : MonoBehaviour
         // executing the jumping
         controller.Move(velocity * Time.deltaTime);
 
-        if (lastPosition != gameObject.transform.position && isGrounded == true)
-        {
-            isMoving = true;
-            // for later use
-        }
-        else
-        {
-            isMoving = false;
-            // for later use
-        }
-
-        lastPosition = gameObject.transform.position;
-
     }
 
     public void ResetMovement()
     {
         velocity = Vector3.zero;
-        lastPosition = transform.position;
     }
 }

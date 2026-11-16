@@ -4,6 +4,9 @@ public class Enemy : MonoBehaviour
 {
     public int health = 100;
     public int MaxHealth { get; private set; }
+    public event System.Action<Enemy> Died;
+
+    private bool isDead;
 
     void Awake()
     {
@@ -21,12 +24,17 @@ public class Enemy : MonoBehaviour
 
     public void TakeDamage(int damage)
     {
-        health -= damage;
+        if (isDead || damage <= 0)
+        {
+            return;
+        }
 
-        Debug.Log(gameObject.name + " Health: " + health);
+        health = Mathf.Max(0, health - damage);
 
         if (health <= 0)
         {
+            isDead = true;
+            Died?.Invoke(this);
             Destroy(gameObject);
         }
     }

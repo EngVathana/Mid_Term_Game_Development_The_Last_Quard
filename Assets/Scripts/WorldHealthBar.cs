@@ -212,6 +212,7 @@ public static class WorldHealthBarInstaller
             current,
             maximum,
             label,
+
             verticalOffset,
             pixelSize,
             worldScale,

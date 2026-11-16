@@ -204,7 +204,7 @@ GameObject:
   - component: {fileID: 7313925472323950682}
   - component: {fileID: 1951270604231248886}
   m_Layer: 0
-  m_Name: GreenFill
+  m_Name: RedFill
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -250,7 +250,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 0.22352941, g: 0.7764706, b: 0.42745098, a: 1}
+  m_Color: {r: 0.9, g: 0.12, b: 0.12, a: 1}
   m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1

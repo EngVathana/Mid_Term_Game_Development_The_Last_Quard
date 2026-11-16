@@ -9,6 +9,8 @@ public sealed class Damageable : MonoBehaviour
     public float MaxHealth => maxHealth;
     public bool IsDead => CurrentHealth <= 0f;
 
+    public event System.Action Died;
+
     private void Awake()
     {
         CurrentHealth = maxHealth;
@@ -22,10 +24,10 @@ public sealed class Damageable : MonoBehaviour
         }
 
         CurrentHealth = Mathf.Max(0f, CurrentHealth - amount);
-
         if (IsDead)
         {
             Debug.Log($"{name} was defeated.", this);
+            Died?.Invoke();
             if (destroyOnDeath)
             {
                 Destroy(gameObject);
