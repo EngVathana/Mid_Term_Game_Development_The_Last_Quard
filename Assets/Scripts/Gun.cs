@@ -1,3 +1,4 @@
+
 using System.Collections;
 using UnityEngine;
 
@@ -8,10 +9,13 @@ public class Gun : MonoBehaviour
     [Header("Shooting")]
     public float shootingRange = 100f;
     public int damage = 25;
+    [Min(0.1f)] public float fireRate = 10f;
+
+    private float nextFireTime = 0f;
 
     [Header("Ammo")]
-    [Min(1)] public int magazineSize = 30;
-    [SerializeField, Min(0)] private int currentAmmo = 30;
+    [Min(1)] public int magazineSize = 40;
+    [SerializeField, Min(0)] private int currentAmmo = 40;
     [Min(0f)] public float reloadDuration = 2f;
 
     public int CurrentAmmo => currentAmmo;
@@ -29,8 +33,13 @@ public class Gun : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetMouseButtonDown(0))
+        // Hold left mouse button to shoot continuously.
+        if (Input.GetMouseButton(0) &&
+            Time.time >= nextFireTime &&
+            !IsReloading &&
+            currentAmmo > 0)
         {
+            nextFireTime = Time.time + (1f / fireRate);
             FireWeapon();
         }
 
@@ -92,6 +101,7 @@ public class Gun : MonoBehaviour
     private IEnumerator Reload()
     {
         IsReloading = true;
+
         yield return new WaitForSeconds(reloadDuration);
 
         currentAmmo = magazineSize;
@@ -125,7 +135,7 @@ public class Gun : MonoBehaviour
     private IEnumerator ShowTracer(Vector3 start, Vector3 end)
     {
         LineRenderer tracer = Instantiate(tracerPrefab);
-        
+
         Debug.Log("TRACER CREATED!");
 
         tracer.positionCount = 2;

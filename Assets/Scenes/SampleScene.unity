@@ -3140,8 +3140,9 @@ MonoBehaviour:
   playerCamera: {fileID: 330585545}
   shootingRange: 1000
   damage: 25
-  magazineSize: 30
-  currentAmmo: 30
+  fireRate: 10
+  magazineSize: 40
+  currentAmmo: 40
   reloadDuration: 2
   tracerPrefab: {fileID: 981026276948265014, guid: 176ee80a14312ac43b5d228c86507a90, type: 3}
   bulletSpawn: {fileID: 256245823}
