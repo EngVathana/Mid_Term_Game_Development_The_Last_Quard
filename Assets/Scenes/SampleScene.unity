@@ -3778,6 +3778,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b6c094d026454321ae59f3e0320d09d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CastleTarget
+--- !u!64 &1153728543
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1153728534}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 2107252493709494298, guid: c551a9baf71df754ab2a1b5221c3ddb4, type: 3}
 --- !u!1 &1195017802
 GameObject:
   m_ObjectHideFlags: 0
@@ -7553,6 +7575,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: c551a9baf71df754ab2a1b5221c3ddb4, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1153728538}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: c551a9baf71df754ab2a1b5221c3ddb4, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1153728543}
   m_SourcePrefab: {fileID: 100100000, guid: c551a9baf71df754ab2a1b5221c3ddb4, type: 3}
 --- !u!1001 &2118822901
 PrefabInstance:
