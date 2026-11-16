@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 /// <summary>Replaces the black crosshair texture with a crisp red UI crosshair.</summary>
@@ -6,8 +7,16 @@ public sealed class RedCrosshair : MonoBehaviour
 {
     private static readonly Color CrosshairRed = new Color(1f, 0.06f, 0.04f, 1f);
 
-    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
-    private static void Install()
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+    private static void RegisterSceneInstaller()
+    {
+        // Runtime initialization runs once per Play session; retries load a new scene.
+        // Remove first so entering Play with domain reload disabled stays safe.
+        SceneManager.sceneLoaded -= Install;
+        SceneManager.sceneLoaded += Install;
+    }
+
+    private static void Install(Scene scene, LoadSceneMode mode)
     {
         GameObject crosshair = GameObject.Find("Crosshair");
         if (crosshair == null || crosshair.GetComponent<RedCrosshair>() != null)

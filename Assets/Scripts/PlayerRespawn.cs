@@ -2,6 +2,7 @@ using System.Collections;
 using System.Linq;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 [RequireComponent(typeof(Damageable))]
@@ -23,8 +24,15 @@ public sealed class PlayerRespawn : MonoBehaviour
     private TMP_Text countdownText;
     private bool isRespawning;
 
-    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
-    private static void InstallOnPlayer()
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+    private static void RegisterSceneInstaller()
+    {
+        // Install again after Retry/Home reloads, not just on the first Play.
+        SceneManager.sceneLoaded -= InstallOnPlayer;
+        SceneManager.sceneLoaded += InstallOnPlayer;
+    }
+
+    private static void InstallOnPlayer(Scene scene, LoadSceneMode mode)
     {
         PlayerMovement player = FindFirstObjectByType<PlayerMovement>();
         if (player != null && player.GetComponent<PlayerRespawn>() == null)
