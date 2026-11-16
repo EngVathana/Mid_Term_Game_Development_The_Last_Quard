@@ -6,11 +6,11 @@ Defend a medieval castle against increasingly difficult waves of Skeletons, Devi
 
 ## Gameplay video
 
-**Video link:** `PASTE_GAMEPLAY_VIDEO_LINK_HERE`
+**Video link: https://youtu.be/C8xwlp3wHVc** 
 
 ## Playable build download
 
-**Download link:** `PASTE_BUILD_DOWNLOAD_LINK_HERE`
+**Download link: https://drive.google.com/drive/u/0/folders/1X0aQe36ZuhYDrfs90ykdOXVie4Gcpb3a** 
 
 **Platform: Windows** 
 
