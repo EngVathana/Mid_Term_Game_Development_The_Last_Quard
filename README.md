@@ -1,8 +1,20 @@
 # The Last Guard
 
-A single-player, first-person castle defense game created for the Year 3, Term 1 Game Development midterm project.
+A single-player, first-person castle defense game created for the Term 1 Game Development midterm project.
 
 Defend a medieval castle against increasingly difficult waves of Skeletons, Devils, and Golems. Use your rifle to protect the walls and keep the castle standing through all three waves.
+
+## Gameplay video
+
+**Video link:** `PASTE_GAMEPLAY_VIDEO_LINK_HERE`
+
+## Playable build download
+
+**Download link:** `PASTE_BUILD_DOWNLOAD_LINK_HERE`
+
+**Platform: Windows** 
+
+Download and extract the complete build archive, then launch the game application.
 
 ## Objective
 
@@ -25,6 +37,7 @@ Eliminate every enemy in all three waves while protecting the castle. Complete t
 The saved game scene currently uses these enemy counts:
 
 | Wave | Skeletons | Devils | Golems | Total |
+| --- | ---: | ---: | ---: | ---: |
 | 1 | 10 | 5 | 1 | 16 |
 | 2 | 15 | 10 | 3 | 28 |
 | 3 | 25 | 15 | 5 | 45 |
@@ -32,6 +45,7 @@ The saved game scene currently uses these enemy counts:
 ## Controls
 
 | Input | Action |
+| --- | --- |
 | **W / A / S / D** or **arrow keys** | Move |
 | **Mouse** | Look around and aim |
 | **Hold left mouse button** | Shoot continuously |
@@ -102,6 +116,7 @@ Unity Editor is not required to play a standalone build.
 Team names were supplied by the team. Contribution summaries are based on repository commit history and should be confirmed before submission.
 
 | Team member / repository identity | Contributions recorded in Git history |
+| --- | --- |
 | **Eng Vathana** — `EngVathana` | Game flow and GameManager; enemy behavior and spawn configuration; wall/castle health UI; sensitivity and balance adjustments; code cleanup and integration. |
 | **Samnang Rithybot** — `j4meee` | Player health UI; ammo reset on respawn; respawn and crosshair fixes; castle collision setup; spawn-location and ammunition adjustments; integration. |
 | **Kim Sambath** — `Sambath` | Automatic shooting; bullet tracers and muzzle flash; crosshair changes; related gameplay updates and script cleanup. |
@@ -110,12 +125,13 @@ Team names were supplied by the team. Contribution summaries are based on reposi
 ## Asset references and credits
 
 | Asset | Creator / source | Use in this project |
+| --- | --- | --- |
 | [KayKit — Medieval Hexagon Pack](https://kaylousberg.itch.io/kaykit-medieval-hexagon) | Kay Lousberg | Castle, stone walls, gate, and medieval environment assets. The included pack license identifies these assets as CC0. |
 | [Free Pack — Gun](https://assetstore.unity.com/packages/3d/props/guns/free-pack-gun-308387) | PolyOne Studio | AK-style rifle model and associated textures/materials. |
 | [War FX](https://assetstore.unity.com/packages/vfx/particles/war-fx-5669) | Jean Moreno | Weapon muzzle flashes and supporting particle-effect assets/scripts. |
 | TextMesh Pro | Unity package/resources included in the project | Menu text, HUD text, and health/ammunition labels. |
-| Skeleton, DevilTall1, and Golem models/animations | **TODO: Add the original pack name, creator, source URL, and license.** | Enemy characters and animations in `Assets/Monster/`. |
-| Terrain grass texture and crosshair artwork | **TODO: Confirm whether team-created or externally sourced; add creator/source as applicable.** | Terrain appearance and aiming UI. |
+| Skeleton, DevilTall1, and Golem models/animations | Original source information unavailable. | Enemy characters and animations in `Assets/Monster/`. |
+| Terrain grass texture and crosshair artwork | Original source information unavailable. | Terrain appearance and aiming UI. |
 
 Local attribution files:
 
@@ -126,12 +142,10 @@ Third-party assets retain their original licenses. Inclusion in this repository 
 
 ## Tutorial references
 
-The team supplied the following YouTube references. Titles, authors, and exact feature attribution that could not be verified remain marked for confirmation.
+The following tutorials were supplied by the team as development references. Video titles and creator names were verified using YouTube's public video metadata. The topics describe the references; the project's implementation may differ from the tutorial code.
 
-| Tutorial title | Author / channel | URL | Feature learned or adapted |
+| Tutorial title | Author / channel | URL | Topic referenced |
 | --- | --- | --- | --- |
-| Tutorial reference 1 — title to confirm | TODO: Confirm channel | [Watch reference 1](https://youtu.be/acsV83gkxqQ?si=hkAXxgwMiE0oApoz) | TODO: Confirm the feature learned or adapted |
-| Tutorial reference 2 — title to confirm | TODO: Confirm channel | [Watch reference 2](https://youtu.be/kAx5g9V5bcM?si=3znTIbJPmgWZGgeP) | TODO: Confirm the feature learned or adapted |
-| FPS Full Game Tutorial · Unity · Part 1 — Basic Movement | TODO: Confirm channel | [Watch Basic Movement](https://www.youtube.com/watch?v=swOfmyJvb98) | First-person movement reference |
-
-These links are listed as tutorial references. A separate gameplay recording and playable build download still need to be supplied.
+| Unity Ammo & Reload System Tutorial! New Input System (Auto & Manual Reload) | [Shark Games](https://www.youtube.com/@sharkgamesdev) | [Watch tutorial](https://www.youtube.com/watch?v=acsV83gkxqQ) | Ammunition tracking, automatic reloading, and manual reloading using Unity's New Input System. |
+| Ammo & Reloading - Unity Tutorial | [Brackeys](https://www.youtube.com/@Brackeys) | [Watch tutorial](https://www.youtube.com/watch?v=kAx5g9V5bcM) | Ammunition and weapon reload logic. |
+| FPS Full Game Tutorial \| Unity \| Part 1 - Basic Movement | [Mike's Code](https://www.youtube.com/@Mikes-Code) | [Watch tutorial](https://www.youtube.com/watch?v=swOfmyJvb98) | Basic first-person player movement in Unity. |
