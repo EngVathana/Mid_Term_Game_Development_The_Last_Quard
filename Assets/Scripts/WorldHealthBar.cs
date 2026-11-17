@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public sealed class WorldHealthBar : MonoBehaviour
@@ -41,7 +42,7 @@ public sealed class WorldHealthBar : MonoBehaviour
 
     private void Update()
     {
-        if (anchor == null || player == null)
+        if (anchor == null || player == null || currentHealth == null || maximumHealth == null)
         {
             Destroy(gameObject);
             return;
@@ -143,6 +144,18 @@ public sealed class WorldHealthBar : MonoBehaviour
 public static class WorldHealthBarInstaller
 {
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
+    private static void Initialize()
+    {
+        SceneManager.sceneLoaded -= HandleSceneLoaded;
+        SceneManager.sceneLoaded += HandleSceneLoaded;
+        Install();
+    }
+
+    private static void HandleSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        Install();
+    }
+
     private static void Install()
     {
         PlayerMovement player = UnityEngine.Object.FindFirstObjectByType<PlayerMovement>();
@@ -165,8 +178,8 @@ public static class WorldHealthBarInstaller
                 "Floating Wall Health",
                 gate,
                 player,
-                () => wallHealth.CurrentHealth,
-                () => wallHealth.MaxHealth,
+                () => wallHealth != null ? wallHealth.CurrentHealth : 0f,
+                () => wallHealth != null ? wallHealth.MaxHealth : 1f,
                 "WALL",
                 8f,
                 new Vector2(320f, 56f),
@@ -182,8 +195,8 @@ public static class WorldHealthBarInstaller
                 "Floating Castle Health",
                 castle.transform,
                 player,
-                () => castleHealth.CurrentHealth,
-                () => castleHealth.MaxHealth,
+                () => castleHealth != null ? castleHealth.CurrentHealth : 0f,
+                () => castleHealth != null ? castleHealth.MaxHealth : 1f,
                 "CASTLE",
                 22f,
                 new Vector2(520f, 78f),
@@ -204,6 +217,11 @@ public static class WorldHealthBarInstaller
         float worldScale,
         Color fillColor)
     {
+        if (GameObject.Find(objectName) != null)
+        {
+            return;
+        }
+
         GameObject barObject = new GameObject(objectName, typeof(RectTransform));
         WorldHealthBar bar = barObject.AddComponent<WorldHealthBar>();
         bar.Configure(
